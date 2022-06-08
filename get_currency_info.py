@@ -25,6 +25,12 @@ class CurrencyInfo(NamedTuple):
 
 
 def get_exchange_rates_info(currency: str) -> CurrencyInfo:
+
+    """
+    This function provides user with information about chosen currency. All info is getting from website 'myfin.by'.
+    :return Info about currency (CurrencyInfo)
+    """
+
     # Some actions with Currency
     curr_as_enum = None
     for enum_curr in Currency:
@@ -36,14 +42,14 @@ def get_exchange_rates_info(currency: str) -> CurrencyInfo:
     if not myfin_response.ok:
         raise ConnectionErrorException("Bot can't get response from website. Sorry...")
     else:
-        return _parse_response(response=myfin_response.text, currency=curr_as_enum)
+        return _parse_response_curr_info(response=myfin_response.text, currency=curr_as_enum)
 
 
 def _get_response_from_site(url: str) -> requests.models.Response:
     return requests.get(url, headers=header)
 
 
-def _parse_response(response: str, currency: Currency) -> CurrencyInfo:
+def _parse_response_curr_info(response: str, currency: Currency) -> CurrencyInfo:
     soup = BS(response, 'lxml')
     finance_table = soup.find('div', class_='table-responsive')
     info_about_curr = finance_table.find('table').find('tbody').find_all('tr')[currency.value[0]].find_all('td')

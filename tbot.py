@@ -1,6 +1,6 @@
 import telebot
 from telebot import types
-from model import get_exchange_rates_info, CurrencyInfo
+from get_currency_info import get_exchange_rates_info, CurrencyInfo
 from exceptions import ConnectionErrorException
 
 def telegram_bot(TOKEN: str) -> None:
@@ -10,6 +10,8 @@ def telegram_bot(TOKEN: str) -> None:
     @bot.message_handler(content_types=['text'])
     def start(message):
         if message.text == '/start':
+            bot.send_message(message.chat.id, text="Hello, I'm Exchange rates Bot! Write '/help' to get commands list.")
+        elif message.text.lower() == '/get_exchange_rates':
             # KeyBoard
             keyboard = types.InlineKeyboardMarkup()
             key_USD = types.InlineKeyboardButton(text='USD', callback_data='USD')
@@ -20,10 +22,19 @@ def telegram_bot(TOKEN: str) -> None:
             keyboard.add(key_RUB)
 
             # Question
-            question = "Hello, I'm Exchange rates Bot! Choose currency and I will give you some information about it."
+            question = "Choose currency and I will give you some information about it. If you need to help, " \
+                       "write '/help'."
 
             # Asking
             bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
+        elif message.text.lower() == '/get_best_bank_to_buy_currency':
+            bot.send_message(message.chat.id, text='This function is under development :(')
+        elif message.text.lower() == '/get_best_bank_to_sell_currency':
+            bot.send_message(message.chat.id, text='This function is under development :(')
+        elif message.text.lower() == '/help':
+            bot.send_message(message.chat.id, text="You can choose several commands:\n"
+                                                   "1. /get_exchange_rates\n2. /get_best_bank_to_buy_currency\n"
+                                                   "3. /get_best_bank_to_sell_currency")
         else:
             bot.send_message(message.from_user.id, 'Write "/start" to begin :)')
 
